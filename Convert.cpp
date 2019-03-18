@@ -164,35 +164,6 @@ string Convert::BinToHex(bool *bit)
 	}
 	return result;
 }
-bool* Convert::DecToBin(string Dec)
-{
-	string Result;
-	bool Negative = false;
-
-	if (SrcDec[0] == '-') //Ki?m tra s? âm.
-	{
-		SrcDec.erase(SrcDec.begin());
-		Negative = true;
-	}
-
-	while (SrcDec != "")
-	{
-		Result.push_back(((SrcDec[SrcDec.size() - 1] - '0') % 2) + '0');
-		SrcDec = StrDivTwo(SrcDec);
-	}
-
-	reverse(Result.begin(), Result.end());
-
-	//N?u là chu?i ban ð?u là s? âm.
-	if (Negative == true)
-	{
-		CQInt QInt(Result); //Ðýa vài s? ki?u CQInt.
-		QInt = CQInttoTwosComplement(QInt); //Chuy?n sang d?ng bù 2.
-		Result = CQInttoBinaryString(QInt); //Ðýa l?i v? nh? phân.
-	}
-
-	return Result;
-}
 
 
 bool QInt::checkIfZero()
