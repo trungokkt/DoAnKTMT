@@ -30,13 +30,6 @@ bool* DecToBin15Bit(int Data15Bit, int &size, bool want) //ham chuyen dec to bin
 		}
 		int chay = i;
 		size = chay;
-		/*if (i < 15)
-		{
-		for (int run = 14; run >= i; run--)
-		{
-		binaryNum[run] = 0;
-		}
-		}*/
 		bool *Res = new bool[temp.size()];
 		for (int j = 0; j < chay; j++)
 		{
@@ -77,10 +70,10 @@ bool* DecToBin15Bit(int Data15Bit, int &size, bool want) //ham chuyen dec to bin
 	}
 };
 
-unsigned int NguyenSangSo(string x)
+unsigned long long int NguyenSangSo(string x)
 {
 	int l1 = x.length();
-	int num1 = 0;
+	unsigned long long int num1 = 0;
 	for (int i = l1 - 1; i >= 0; --i)
 	{
 		num1 += (int)(x[i] - '0') * pow(10, l1 - i - 1);
@@ -124,39 +117,39 @@ bool* StrDecToBin(string Dec)
 	}
 
 	//doi phan so nguyen tu string sang so;
-	int nguyen=NguyenSangSo(tempRes15Bit);
-	
+	int nguyen = NguyenSangSo(tempRes15Bit);
+
 	//doi phan Frac tu string sang so
-	int sizeFrac = tempFrac.size(); 
-	double frac = NguyenSangSo(tempFrac) / pow(10, sizeFrac); 
+	int sizeFrac = tempFrac.size();
+	long double frac = NguyenSangSo(tempFrac) / pow(10, sizeFrac);
+
 
 	int dichNguyen;
-	DecToBin15Bit(nguyen, dichNguyen,false); //dich qua bao nhieu bit
+	DecToBin15Bit(nguyen, dichNguyen, false); //dich qua bao nhieu bit
 	bool* res15Bit = new bool[dichNguyen];
-	cout << dichNguyen << endl;
 
 	//doi phan nguyen sang bin
 
-		for (int i = 0; i < dichNguyen; i++)
+	for (int i = 0; i < dichNguyen; i++)
+	{
+		if (DecToBin15Bit(nguyen, dichNguyen, false)[i] == true)
 		{
-			if (DecToBin15Bit(nguyen, dichNguyen, false)[i] == true)
-			{
-				res15Bit[i] = true;
-			}
-			else res15Bit[i] = false;
+			res15Bit[i] = true;
 		}
-	
+		else res15Bit[i] = false;
+	}
 	dichNguyen--;
 	int soMuE = 16383 + dichNguyen; //so mu E
 
 
 	//chuyen phan da dich (cua nguyen) sang frac
-	int lapDayFrac = 112 - dichNguyen;
+	int lapDayFrac = 111 - dichNguyen + 1;
 	run = 1;
 	if (lapDayFrac != 111)
 	{
-		for (int i = 111; i > lapDayFrac; i--)
+		for (int i = 111; i > lapDayFrac-1; i--)
 		{
+			
 			if (res15Bit[run] == true)
 			{
 				resFrac[i] = true;
@@ -169,8 +162,9 @@ bool* StrDecToBin(string Dec)
 
 	//doi frac sang bin
 	int dem = 0;
-	while (lapDayFrac--)
+	while (lapDayFrac!=0)
 	{
+		lapDayFrac--;
 		frac = frac * 2;
 		int fract_bit = frac;
 
@@ -182,7 +176,6 @@ bool* StrDecToBin(string Dec)
 		else
 			resFrac[lapDayFrac] = false;
 	}
-
 	
 	//doi so so mu E
 	for (int i = 0; i < 15; i++)
@@ -217,6 +210,7 @@ bool* StrDecToBin(string Dec)
 		else res[i] = false;
 		run++;
 	}
+	
 	return res;
 }
 
