@@ -14,28 +14,34 @@ void Qfloat::setData(int viTrim, unsigned int Data)
 	this->data[viTrim] = Data;
 }
 
-bool* DecToBin15Bit(int Data15Bit, int &size, bool want) //ham chuyen dec to bin max la 15 bit
+bool* DecToBin15Bit(unsigned long long int Data15Bit, int &size, bool want) //ham chuyen dec to bin max la 15 bit
 {
 	string temp;
 	if (want == false)
 	{
-		int binaryNum[15];
+		unsigned long long int x;
 		int i = 0;
 		while (Data15Bit > 0)
 		{
-			binaryNum[i] = Data15Bit % 2;
-			temp.push_back(binaryNum[i]);
+			x = Data15Bit % 2;
+			temp.push_back(x);
 			Data15Bit = Data15Bit / 2;
 			i++;
 		}
 		int chay = i;
 		size = chay;
+		int *binaryNum = new int[temp.size()];
 		bool *Res = new bool[temp.size()];
+		for (int j = 0; j < chay; j++)
+		{
+			binaryNum[j] = temp[j];
+		}
 		for (int j = 0; j < chay; j++)
 		{
 			Res[i - 1] = binaryNum[j];
 			i--;
 		}
+		
 		return Res;
 		delete[]Res;
 	}
@@ -80,7 +86,6 @@ unsigned long long int NguyenSangSo(string x)
 	}
 	return num1;
 }
-
 bool* StrDecToBin(string Dec)
 {
 	bool res[128];
@@ -117,12 +122,11 @@ bool* StrDecToBin(string Dec)
 	}
 
 	//doi phan so nguyen tu string sang so;
-	int nguyen = NguyenSangSo(tempRes15Bit);
+	unsigned long long int nguyen = NguyenSangSo(tempRes15Bit);
 
 	//doi phan Frac tu string sang so
 	int sizeFrac = tempFrac.size();
 	long double frac = NguyenSangSo(tempFrac) / pow(10, sizeFrac);
-
 
 	int dichNguyen;
 	DecToBin15Bit(nguyen, dichNguyen, false); //dich qua bao nhieu bit
@@ -144,10 +148,11 @@ bool* StrDecToBin(string Dec)
 
 	//chuyen phan da dich (cua nguyen) sang frac
 	int lapDayFrac = 111 - dichNguyen + 1;
+	int tempLDF = lapDayFrac;
 	run = 1;
 	if (lapDayFrac != 111)
 	{
-		for (int i = 111; i > lapDayFrac-1; i--)
+		for (int i = 111; i >=tempLDF; i--)
 		{
 			
 			if (res15Bit[run] == true)
