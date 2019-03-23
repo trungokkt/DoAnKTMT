@@ -27,7 +27,18 @@ public:
 	QInt operator + (QInt x) const;
 	QInt operator - (QInt x) const;
 	QInt& operator ~ ();
-
+	
+	//Toán tử ==.
+	bool operator == (QInt);
+	//Toán tử /.
+	bool operator < (QInt);
+	//Toán tử /.
+	bool operator > (QInt);
+	//Toán tử /.
+	bool operator >= (QInt);
+	//Toán tử /.
+	bool operator <= (QInt);
+	
 	QInt QInttoTwosComplement();
 
 	bool checkIfZero();
