@@ -215,7 +215,14 @@ bool* StrDecToBin(string Dec)
 		else res[i] = false;
 		run++;
 	}
-	
-	return res;
+	//doi res lai do code nguoc
+	bool tempRev[128];
+	int runRev = 127;
+	for (int i = 0; i < 128; i++)
+	{
+		tempRev[runRev] = res[i];
+		runRev--;
+	}
+	return tempRev;
 }
 
