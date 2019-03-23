@@ -121,3 +121,189 @@ QInt QInt::operator - (QInt x) const
 {
 	return (*this + x.QInttoTwosComplement());
 }
+QInt QInt::operator * (QInt x) const
+{
+	QInt Result;
+
+	QInt Temp = *this;
+
+	QInt ONE("1"); // 1
+	bool Negative = false; //kiem tra so am
+
+	if ((Temp.isNegative() && !x.isNegative()) || (!Temp.isNegative() && x.isNegative()))//kiem tra trai dau
+	{
+		Negative = true;
+	}
+	if (x.isNegative())
+	{
+		x = ~(x - ONE); //neu am thi chuyen sang dang so duong
+	}
+	if (Temp.isNegative())
+	{
+		Temp = ~(Temp - ONE); //neu am thi chuyen sang dang so duong
+	}
+	//nhan 2 so
+	while (!(x.isNegative() || x.isEqualZero()))
+	{
+		if (((x & ONE)- ONE).isEqualZero()) //x le thi cong ket qua voi Temp
+		{
+
+			Result = Result + Temp;
+		}
+
+		Temp = Temp << 1; //nhan temp cho 2;
+		x = x >> 1; //chia x cho 2.
+	}
+	Result = Temp;
+	// neu 2 so trai dau
+	if (Negative == true)
+	{
+		Result = ~Result + ONE; //chuyet ket qua ve dang bu 2.
+	}
+
+	return Result;
+}
+// toan tu /
+QInt QInt::operator / (QInt x)
+{
+	QInt Result("1");
+	if (this->isEqualZero() || x.isEqualZero()) // kiem tra kq va x co bang 0 khong
+	{
+		return Result;
+	}
+	else
+	{
+		QInt One("1");
+
+		if ((x - One).isEqualZero())
+		{
+			Result = *this;
+		}
+		else
+		{
+			QInt Temp = *this;
+			int k = 128;
+			bool Negative = false;
+
+			if ((Temp.isNegative() && !x.isNegative()) || (!Temp.isNegative() && x.isNegative()))//neu 2 so trai dau
+			{
+				Negative = true;
+			}
+
+			if (x.isNegative())
+			{
+				x = ~(x - One); //am thi chuyen ve so duong
+			}
+			if (Temp.isNegative())
+			{
+				Temp = ~(Temp - One); //am thi chuyen ve so duong
+			}
+
+			while (k > 0)
+			{
+				Result = Result << 1;
+				Result.Data[3] = Result.Data[3] | ((Temp.Data[3] & (1 << 31)) >> 31);
+				Temp = Temp << 1;
+
+				Result = Result - x;
+				if (Result.isNegative())
+				{
+					Result = Result + x;
+				}
+				else
+				{
+					Temp.Data[3] = Temp.Data[3] | 1;
+				}
+
+				--k;
+			}
+
+			Result = Temp;
+			if (Negative == true)
+			{
+				Result = ~Result + One;
+			}
+		}
+	}
+	return Result;
+}
+bool QInt::operator == (QInt x) {
+	if (this != &x)
+	{
+		for (int i = 0; i < x.size(); i++)
+		{
+			if (this->Data[i] != x.Data[i])
+				return false;
+		}
+	}
+	return true;
+}
+//Toán tử <.
+bool  QInt::operator < (QInt x) {
+	if (this->isNegative() && !x.isNegative())
+		return true;
+	if (!this->isNegative() && x.isNegative())
+		return false;
+	if (this->isNegative() && x.isNegative()){
+		QInt One("1");
+		x = ~(x - One); //doi ve so duong
+		*this = ~(*this - One);
+		if (this != &x)
+		{
+			for (int i = 0; i < x.size(); i++)
+			{
+				if (this->Data[i] < x.Data[i])
+					return false;
+			}
+		}
+		return true;
+	}
+
+	if (!this->isNegative() && !x.isNegative()) {
+		if (this != &x)
+		{
+			for (int i = 0; i < x.size(); i++)
+			{
+				if (this->Data[i] > x.Data[i])
+					return false;
+			}
+		}
+		return true;
+	}
+}
+//Toán tử >.
+bool  QInt::operator > (QInt x) {
+	return !(*this < x);
+}
+//Toán tử >=.
+bool  QInt::operator >= (QInt x) {
+	return (*this > x || *this == x);
+}
+/*Toán tử <=*/
+bool  QInt::operator <= (QInt x) {
+	return (*this < x || *this == x);
+}
+//Hàm kiếm tra bằng không.
+bool QInt::isEqualZero()
+{
+	for (int i = 0; i < this->size(); i++)
+	{
+		if (this->Data[i] != 0)
+		{
+			return false;
+		}
+	}
+
+	return true;
+}
+
+//Hàm kiểm tra số âm.
+bool QInt::isNegative()
+{
+	if ((this->Data[0] & (1 << (_SIZE_INT_ - 1))) >> (_SIZE_INT_ - 1) == 1)
+	{
+		return true;
+	}
+
+	return false;
+}
